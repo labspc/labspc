@@ -1,0 +1,36 @@
+name: Update GitHub Profile
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # 每 12 小时更新一次
+  workflow_dispatch:        # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Generate 3D Contribution Graph
+        uses: yoshi389111/github-profile-3d-contrib@0.9.1
+        with:
+          username: labspc
+          output_path: assets/github-contribution-grid.svg
+
+      - name: Generate GitHub Stats
+        uses: anuraghazra/github-readme-stats@v1
+        with:
+          username: labspc
+          include_all_commits: true
+          count_private: true
+          theme: default
+
+      - name: Push Generated Assets (if any)
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "⬆️ update GitHub profile info"
+          git push
